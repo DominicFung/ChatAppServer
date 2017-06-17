@@ -27,7 +27,7 @@ var server = ws.createServer(function (conn){
 
 console.log("websocket is running on port: " + _PORT);
 
-app.listen(_PORT);
+app.listen(_PORT+1);
 
-console.log("server is running on port: " + _PORT);
+console.log("http interface is running on port: " + (_PORT+1));
 
