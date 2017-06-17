@@ -1,29 +1,33 @@
-// var express = require('express');
-// var app = express();
-// var server = require('http').createServer(app);
-// var io = require('socket.io').listen(server);
-var ws = require("nodejs-websocket");
+var express = require('express');
+var app = express();
+//var server = require('http').createServer(app);
 
+var ws = require("nodejs-websocket");
 var _PORT = 3000;
 
-var server = ws.createServer(function (conn){
-    console.log("new connection")
-    conn.on("text", function (str){
-        console.log("Received: "+str)
-        conn.sendText(str.toUpperCase()+"!")
-    })
-    conn.on("close", function (code, reason){
-        console.log("closed: "+code)
-    })
-}).listen(_PORT)
+var bodyParser = require('body-parser');
+var jsonParser = bodyParser.json();
 
-// server.listen(_PORT);
+
+app.post('/login', jsonParser, function(){
+    console.log(req.body);
+    //respond with only information??
+});
+
+var server = ws.createServer(function (conn){
+    console.log("new connection");
+    conn.on("text", function (str){
+        console.log("Received: "+str);
+        conn.sendText(str.toUpperCase()+"!");
+    });
+    conn.on("close", function (code, reason){
+        console.log("closed: "+code);
+    });
+}).listen(_PORT);
+
+console.log("websocket is running on port: " + _PORT);
+
+app.listen(_PORT);
+
 console.log("server is running on port: " + _PORT);
 
-// io.sockets.on('connection', function(socket){
-//     console.log("Connected!");
-//     socket.on('message', function(data){
-//         console.log("message: "+data);
-//         io.sockets.emit('message', data);
-//     });
-// });
