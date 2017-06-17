@@ -1,0 +1,10 @@
+{
+    "name":"demoServer",
+    "version":"0.0.1",
+    "private":"true",
+    "dependencies": {
+        "socket.io":"2.0.2",
+        "express":"4.15.3",
+        "nodejs-websocket":"3.10.10"
+    }
+}
