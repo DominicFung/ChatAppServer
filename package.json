@@ -5,6 +5,7 @@
     "dependencies": {
         "express":"4.15.3",
         "nodejs-websocket":"1.7.1",
-        "body-parser":"1.17.2"
+        "body-parser":"1.17.2",
+        "pg": "6.4.0"
     }
 }
