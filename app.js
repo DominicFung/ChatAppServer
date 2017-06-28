@@ -27,12 +27,13 @@ var Sequelize = require('sequelize');
 // //console.log(query);
 // client.end();
 
-const sequelize = new Sequelize("ChatDB", "postgres", "CV1234", {
+const sequelize = new Sequelize("SchoolChatDB", "postgres", "CV1234", {
   host: "localhost",
   dialect: "postgres",
   pool: { max: 5, min: 0, idle: 10000 }
 });
 
+//http://docs.sequelizejs.com/manual/tutorial/instances.html
 sequelize
   .authenticate()
   .then(() => {
@@ -42,7 +43,40 @@ sequelize
     console.error("Unable to connect to the database:", err);
   });
 
-//const Student = sequelize.
+const School = sequelize.define('School', {
+    school_name: {
+        type: Sequelize.STRING
+    }
+},
+{
+    timestamps: false,
+//    paranoid: true,
+    freezeTableName: true,
+//    tableName: 'School'
+});
+
+// HARD REFRESH
+// School.sync({force: true}).then(() => {
+//     return School.create({
+//         school_name: 'University of Toronto Mississauga'
+//     });
+// });
+
+School.create({
+    school_name: 'University of Waterloo'
+}).then( waterloo => {
+    console.log(waterloo.get({
+        plain: true
+    }));
+});
+
+School.create({
+    school_name: 'University of Toronto'
+}).then( toronto => {
+    console.log(toronto.get({
+        plain: true
+    }));
+});
 
 var app = express();
 var _exPORT = 3001;
