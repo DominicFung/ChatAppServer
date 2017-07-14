@@ -96,12 +96,18 @@ app.post("/login", jsonParser, function() {
 var server = ws
   .createServer(function(conn) {
     console.log("new connection");
+    
     conn.on("text", function(str) {
       console.log("Received: " + str);
       conn.sendText("someone said: " + str);
     });
+
     conn.on("close", function(code, reason) {
       console.log("closed: " + code);
+    });
+
+    conn.on("error", function(e){
+        console.log(e);
     });
   })
   .listen(_wsPORT);
