@@ -88,9 +88,10 @@ var _wsPORT = 3000;
 var bodyParser = require("body-parser");
 var jsonParser = bodyParser.json();
 
-app.post("/login", jsonParser, function() {
+app.post("/login", jsonParser, function(req, res, next) {
   console.log(req.body);
-  //respond with only information??
+  console.log("*****IN login");
+  res.json({a : "WE DID IT"});
 });
 
 var server = ws
@@ -99,7 +100,7 @@ var server = ws
     
     conn.on("text", function(str) {
       console.log("Received: " + str);
-      conn.sendText("someone said: " + str);
+      conn.sendText(str);
     });
 
     conn.on("close", function(code, reason) {
