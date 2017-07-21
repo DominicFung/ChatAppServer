@@ -55,6 +55,44 @@ const School = sequelize.define('School', {
 //    tableName: 'School'
 });
 
+const Student = sequelize.define('Student', {
+    student_email: {
+        type: Sequelize.STRING,
+        primaryKey: true
+    },
+    first_name: {
+        type: Sequelize.STRING
+    },
+    last_name: {
+        type: Sequelize.STRING
+    },
+    password: {
+        type: Sequelize.STRING
+    },
+    school_id_fk: {
+        type: Sequelize.INTEGER,
+        references: {
+            model: School,
+            key: 'id',
+            deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+        }
+    }
+},
+{
+    timestamps: false,
+    freezeTableName: true
+});
+
+Student.sync({force: true}).then(() => {
+    return Student.create({
+        student_email: 'fung_dominic@hotmail.com',
+        first_name: 'Dominic',
+        last_name: 'Fung',
+        password: '123a',
+        school_id_fk: 5
+    });
+});
+
 // HARD REFRESH
 // School.sync({force: true}).then(() => {
 //     return School.create({
@@ -62,25 +100,24 @@ const School = sequelize.define('School', {
 //     });
 // });
 
-School.create({
-    school_name: 'University of Waterloo'
-}).then( waterloo => {
-    console.log(waterloo.get({
-        plain: true
-    }));
-});
+// School.create({
+//     school_name: 'University of Waterloo'
+// }).then( waterloo => {
+//     console.log(waterloo.get({
+//         plain: true
+//     }));
+// });
 
-School.create({
-    school_name: 'University of Toronto'
-}).then( toronto => {
-    console.log(toronto.get({
-        plain: true
-    }));
-});
+// School.create({
+//     school_name: 'University of Toronto'
+// }).then( toronto => {
+//     console.log(toronto.get({
+//         plain: true
+//     }));
+// });
 
 var app = express();
 var _exPORT = 3001;
-//var server = require('http').createServer(app);
 
 var ws = require("nodejs-websocket");
 var _wsPORT = 3000;
@@ -89,9 +126,28 @@ var bodyParser = require("body-parser");
 var jsonParser = bodyParser.json();
 
 app.post("/login", jsonParser, function(req, res, next) {
-  console.log(req.body);
-  console.log("*****IN login");
-  res.json({a : "WE DID IT"});
+  console.log(JSON.stringify(req.body));
+  Student.find({
+      where: {
+          student_email: req.body.email
+      }
+  }).then(validateStudent => {
+    if(validateStudent){
+        console.log("object found, password: " + req.body.password+"  "+validateStudent.password);
+        if(validateStudent.password === req.body.password){
+            console.log("valid user");
+            res.json({ 
+                loginStatus: 1,
+                username: validateStudent.first_name
+            });
+        } else {
+            console.log("invalid user");
+            res.json({ loginStatus : 0 });
+        }
+    } else {
+       console.warn("unable to obtain an object"); 
+    }
+  });
 });
 
 var server = ws
@@ -100,7 +156,7 @@ var server = ws
     
     conn.on("text", function(str) {
       console.log("Received: " + str);
-      conn.sendText(str);
+      conn.sendText(str+JSON.stringify({key: 1}));
     });
 
     conn.on("close", function(code, reason) {
