@@ -6,6 +6,7 @@
     "body-parser": "1.17.2",
     "express": "4.15.3",
     "mongodb": "^2.2.30",
+    "mongoose": "^4.11.3",
     "nodejs-websocket": "1.7.1",
     "pg": "^6.4.0",
     "pg-hstore": "^2.3.2",
