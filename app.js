@@ -22,12 +22,26 @@ app.post("/login", jsonParser, function(req, res, next) {
         console.log("object found, password: " + req.body.password+"  "+validateStudent.password);
         if(validateStudent.password === req.body.password){
             console.log("valid user");
-            //console.log(mongodb.conn().collection("GlobalChat").find());
-            res.json({ 
-                loginStatus: 1,
-                username: validateStudent.first_name,
-                //chatHist: [ mongodb.conn().collection("GlobalChat").find() ]
+
+            mongodb.conn().collection("GlobalChat").find({}).toArray(function(err, results){
+                console.log(JSON.stringify(results));
+
+                if(err){
+                    res.json({ 
+                        loginStatus: 1,
+                        username: validateStudent.first_name,
+                        chatHist: -1,
+                        errorLog: err
+                    });
+                } else {
+                    res.json({ 
+                        loginStatus: 1,
+                        username: validateStudent.first_name,
+                        chatHist: results
+                    });
+                };
             });
+
         } else {
             console.log("invalid user");
             res.json({ loginStatus : 0 });
